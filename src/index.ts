@@ -134,7 +134,7 @@ document.addEventListener('DOMContentLoaded', function(){
         saveNewTask(newTask)
 
         inputEl.value = ""
-        formTextAreaEl.validationMessage = ""
+        formTextAreaEl.value = ""
         updateListDisplay();
         
 
