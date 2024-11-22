@@ -4,7 +4,7 @@ import { v4 as uuidV4 } from "uuid";
 type Task = {
     id: string,
     title : string,
-    completed : boolean,
+    description : string,
     createdAt : Date
 }
 
@@ -15,29 +15,57 @@ document.addEventListener('DOMContentLoaded', function(){
     const formEl = document.querySelector<HTMLFormElement>('#new-task-form')
     const inputEl = document.querySelector<HTMLInputElement>('#new-task-title')
     const containerEl = document.querySelector<HTMLDivElement>('.container')
+    const formTextAreaEl = document.querySelector<HTMLTextAreaElement>('.description')
+
 
     
     // getting the localstorage tiem and setting them to tasklist array
-    const taskList: Task[] = getItemsLS()
-
+    let taskList: Task[] = getItemsLS()
+  
+    // task delete func
+    function deleteTask(id: string){
+        taskList = taskList.filter(task => task.id !== id)
+        localStorage.setItem('taskLists', JSON.stringify(taskList))  // Save the updated list to localStorage
+        updateListDisplay();                                         // Update the display to reflect the changes
+    }
 
 
     // function to add new item in the list
     function addListItem(task: Task){
 
+        // create a dlt btn
+        const dltBtn = document.createElement('button')
+        dltBtn.classList.add('dlt-btn')
+        dltBtn.textContent = "Delete"
+
+        
+        dltBtn.addEventListener('click', function(){
+            deleteTask(task.id)
+        })
+                
+          
 
         // create a div-card to show new task
         const newTaskDivCard = document.createElement('div')
+        // adding the card class to our created div
+        newTaskDivCard.classList.add('card')
+
         newTaskDivCard.innerHTML = `
-            <h4>${task.title}</h4>
-            <p>Status : ${task.completed? "Complete":"In Complete"}</p>
-            <p>Created On: ${new Date(task.createdAt).toLocaleDateString()}</p>
+            <span> ${new Date(task.createdAt).toLocaleDateString()}</span>
+            <h2>${task.title}</h2>
+            <p> ${task.description}</p>    
+            
         `
-        // create a li el and div into it
+        newTaskDivCard.appendChild(dltBtn)
+
+        // create a li el and add div into it
         const newTaskItem = document.createElement('li')
         newTaskItem.appendChild(newTaskDivCard)
+
         // add the li el in ulList
         ulList.appendChild(newTaskItem)
+
+        
         
     }
 
@@ -62,7 +90,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
     // creating h1 and ul list in the container div
     const containerH1 = document.createElement('h1')
-            containerH1.textContent = "List Of Items"
+            containerH1.textContent = "Tasks List"
             containerEl?.append(containerH1)
 
             const ulList = document.createElement('ul')
@@ -73,9 +101,9 @@ document.addEventListener('DOMContentLoaded', function(){
 
 
 
-    // Function to display tasks or show an empty list message
+    // to display tasks or show an empty list message
     function updateListDisplay() {
-        ulList.innerHTML = ""; // Clear the list
+        ulList.innerHTML = ""; // first we clear the list
 
         if (taskList.length === 0) {
             const emptyMessage = document.createElement('p');
@@ -90,12 +118,15 @@ document.addEventListener('DOMContentLoaded', function(){
     formEl?.addEventListener('submit', function(event){
         event.preventDefault()
         
-        if(!inputEl?.value.trim()) return
+        if(!inputEl?.value.trim() || !formTextAreaEl?.value) {
+            alert('title and description can not be blank')
+            return
+        }
 
         const newTask: Task = {
             id: uuidV4(),
             title: inputEl.value,
-            completed: false,
+            description: formTextAreaEl.value,
             createdAt: new Date() 
         }
 
@@ -103,6 +134,7 @@ document.addEventListener('DOMContentLoaded', function(){
         saveNewTask(newTask)
 
         inputEl.value = ""
+        formTextAreaEl.validationMessage = ""
         updateListDisplay();
         
 

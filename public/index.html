@@ -5,19 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>To-Do List</title>
     <script type="module" src="/dist/index.js"></script>
-    <style>
-      #list {
-        list-style: none;
-        padding: 0;
-      }
-    </style>
+    <link rel="stylesheet" href="./style.css">
   </head>
   <body>
-    <form id="new-task-form">
-      <input type="text" id="new-task-title" placeholder="Enter task title">
-      <button type="submit" id="form-btn">Add</button>
-    </form>
-    <div class="container"></div>
+    <div class="dashboard">
+      <h1>Create Task</h1>
+      <form id="new-task-form">
+        <input type="text" id="new-task-title" placeholder="Enter task title">
+        <textarea placeholder="Task Description" class="description"></textarea>
+        <button type="submit" id="form-btn">Add</button>
+      </form>
+      <div class="container"></div>
+    </div>
     
   </body>
 </html>
